@@ -1,7 +1,8 @@
+// src/components/Login.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { LoginUser } from '../calls/userCalls'; // Import LoginUser
 import './../styles/Login.css';
 
 const Login = () => {
@@ -13,10 +14,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/users/login', { email, password });
+      const res = await LoginUser({ email, password }); // Use LoginUser function
       
-      // Store token in cookies (optional as server sets HttpOnly cookie)
-      Cookies.set('token', res.data.token);
+      // Store token in cookies
+      Cookies.set('token', res.token);
       
       navigate('/dashboard'); // Navigate to the dashboard after successful login
     } catch (err) {
@@ -27,7 +28,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <h2>Login</h2>
-      {error && <p className="error-message">{error}</p>}
+      {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -45,6 +46,9 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <p>
+        Forgot your password? <span onClick={() => navigate('/forgot-password')} className="forgot-password-link">Reset it</span>
+      </p>
       <p>
         Don't have an account? <span onClick={() => navigate('/signup')} className="signup-link">Sign up</span>
       </p>

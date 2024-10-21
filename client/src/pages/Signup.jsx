@@ -1,7 +1,8 @@
+// src/components/Signup.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { RegisterUser } from '../calls/userCalls'; // Import RegisterUser
 import './../styles/Signup.css';
 
 const Signup = () => {
@@ -14,10 +15,10 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/users/register', { name, email, password });
+      const res = await RegisterUser({ name, email, password }); // Use RegisterUser function
       
-      // Store token in cookies (optional as server sets HttpOnly cookie)
-      Cookies.set('token', res.data.token);
+      // Store token in cookies
+      Cookies.set('token', res.token);
       
       navigate('/dashboard'); // Navigate to the dashboard after successful signup
     } catch (err) {
@@ -28,7 +29,7 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <h2>Signup</h2>
-      {error && <p className="error-message">{error}</p>}
+      {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"

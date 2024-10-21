@@ -115,4 +115,46 @@ router.get('/', async (req, res) => {
     }
   });
 
+// Request reset password link
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+  
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+  
+    // Generate a reset token and send an email (you need to implement sendEmail)
+    const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    await sendEmail(user.email, resetToken); // Implement sendEmail to send email with reset link
+  
+    res.status(200).json({ message: 'Reset link sent to your email' });
+  });
+  
+  // Reset password
+  router.post('/reset-password', async (req, res) => {
+    const { password, token } = req.body;
+  
+    // Verify the token
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const user = await User.findById(decoded.id);
+  
+      if (!user) {
+        return res.status(400).json({ message: 'Invalid token' });
+      }
+  
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      await user.save();
+  
+      res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+      res.status(400).json({ message: 'Invalid token' });
+    }
+  });
+  
+
 module.exports = router;
