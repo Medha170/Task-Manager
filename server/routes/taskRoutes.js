@@ -1,65 +1,106 @@
 const express = require('express');
-const Progress = require('../models/Progress');
 const Task = require('../models/Task');
 const router = express.Router();
 
-// Create a new progress entry
+// Get all tasks
+router.get('/', async (req, res) => {
+  try {
+    const tasks = await Task.find().populate('categoryID').populate('userID');
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Create a new task
 router.post('/', async (req, res) => {
-  const { taskID, completionPercentage } = req.body;
+  const { title, description, dueDate, priority, status, categoryID, userID } = req.body;
+
+  const task = new Task({
+    title,
+    description,
+    dueDate,
+    priority,
+    status,
+    categoryID,
+    userID,
+  });
 
   try {
-    const task = await Task.findById(taskID);
+    const newTask = await task.save();
+    res.status(201).json(newTask);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Update a task
+router.put('/:id', async (req, res) => {
+  const { title, description, dueDate, priority, status, categoryID, userID } = req.body;
+
+  try {
+    const task = await Task.findById(req.params.id);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    const progress = new Progress({ taskID, completionPercentage });
-    const savedProgress = await progress.save();
-    res.status(201).json(savedProgress);
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.dueDate = dueDate || task.dueDate;
+    task.priority = priority || task.priority;
+    task.status = status || task.status;
+    task.categoryID = categoryID || task.categoryID;
+    task.userID = userID || task.userID;
+
+    const updatedTask = await task.save();
+    res.json(updatedTask);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 
-// Get all progress entries for a specific task
-router.get('/task/:taskID', async (req, res) => {
-  try {
-    const progressEntries = await Progress.find({ taskID: req.params.taskID });
-    res.json(progressEntries);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Update progress for a task
-router.patch('/:id', async (req, res) => {
-  try {
-    const progress = await Progress.findById(req.params.id);
-    if (!progress) {
-      return res.status(404).json({ message: 'Progress entry not found' });
-    }
-
-    progress.completionPercentage = req.body.completionPercentage || progress.completionPercentage;
-    const updatedProgress = await progress.save();
-    res.json(updatedProgress);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Delete a progress entry
+// Delete a task
 router.delete('/:id', async (req, res) => {
   try {
-    const progress = await Progress.findById(req.params.id);
-    if (!progress) {
-      return res.status(404).json({ message: 'Progress entry not found' });
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
     }
-
-    await progress.remove();
-    res.json({ message: 'Progress entry deleted' });
+    await task.remove();
+    res.json({ message: 'Task deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
+// Find tasks by priority
+router.get('/priority/:priority', async (req, res) => {
+    try {
+      const tasks = await Task.find({ priority: req.params.priority });
+      res.json(tasks);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+  
+  // Find tasks by category
+  router.get('/category/:categoryID', async (req, res) => {
+    try {
+      const tasks = await Task.find({ categoryID: req.params.categoryID });
+      res.json(tasks);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+  
+  // Find tasks by title (partial match)
+  router.get('/title/:title', async (req, res) => {
+    try {
+      const tasks = await Task.find({ title: { $regex: req.params.title, $options: 'i' } });
+      res.json(tasks);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
 
 module.exports = router;

@@ -44,3 +44,6 @@ export const resetPassword = async (value) => {
         throw error; // Rethrow the error for further handling if needed
     }
 };
+
+// Logout user
+

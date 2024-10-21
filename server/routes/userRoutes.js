@@ -156,5 +156,31 @@ router.post('/forgot-password', async (req, res) => {
     }
   });
   
+// Get the current logged-in user based on the token in cookies
+router.get('/current-user', (req, res) => {
+    const token = req.cookies.authToken; // Assuming the token is stored in 'authToken' cookie
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized, no token' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        User.findById(decoded.userId, (err, user) => {
+            if (err || !user) {
+                return res.status(401).json({ message: 'User not found' });
+            }
+            res.status(200).json(user);
+        });
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+});
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('authToken', { path: '/' }); // Clears the auth token cookie
+    res.status(200).json({ message: 'Logged out successfully' });
+});
+
 
 module.exports = router;

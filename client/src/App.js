@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import Home from './pages/Home';
 // import Dashboard from './pages/Dashboard'; // Assuming you'll create this later
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/" element={<Home />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> Protected page for authenticated users */}
       </Routes>
     </Router>
