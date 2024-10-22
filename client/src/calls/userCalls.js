@@ -1,5 +1,7 @@
 // src/calls/users.js
 import { axiosInstance } from './index';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 // Register a new user
 export const RegisterUser = async (value) => {
@@ -46,4 +48,19 @@ export const resetPassword = async (value) => {
 };
 
 // Logout user
+export const LogoutUser = async () => {
+    const navigate = useNavigate();
+    try {
+        // Call the backend logout route
+        await axiosInstance.post('/users/logout');
+
+        // Clear the token cookie
+        Cookies.remove('token');
+
+        // Redirect to the login page
+        navigate('/login');
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
 

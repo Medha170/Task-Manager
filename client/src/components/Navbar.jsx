@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './../styles/Navbar.css'; // Import Navbar styles
+import Cookies from 'js-cookie';
+import { axiosInstance } from '../calls'; // Ensure axios instance is imported
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -8,33 +10,68 @@ const Navbar = () => {
     const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
 
-    const handlePriorityChange = (e) => {
-        setPriority(e.target.value);
-        if (e.target.value) {
-            navigate(`/tasks/priority/${e.target.value}`);
+    // Handle priority change and navigate to the corresponding route
+    const handlePriorityChange = async (e) => {
+        const selectedPriority = e.target.value;
+        setPriority(selectedPriority);
+        if (selectedPriority) {
+            // Fetch tasks by priority and navigate
+            try {
+                await axiosInstance.get(`/tasks/priority/${selectedPriority}`);
+                navigate(`/tasks/priority/${selectedPriority}`);
+            } catch (error) {
+                console.error("Error fetching tasks by priority:", error);
+            }
+        } else {
+            navigate('/tasks'); // Fallback to all tasks if no priority is selected
         }
     };
 
-    const handleCategoryChange = (e) => {
-        setCategory(e.target.value);
-        if (e.target.value) {
-            navigate(`/tasks/category/${e.target.value}`);
+    // Handle category change and navigate to the corresponding route
+    const handleCategoryChange = async (e) => {
+        const selectedCategory = e.target.value;
+        setCategory(selectedCategory);
+        if (selectedCategory) {
+            // Fetch tasks by category and navigate
+            try {
+                await axiosInstance.get(`/tasks/category/${selectedCategory}`);
+                navigate(`/tasks/category/${selectedCategory}`);
+            } catch (error) {
+                console.error("Error fetching tasks by category:", error);
+            }
+        } else {
+            navigate('/tasks'); // Fallback to all tasks if no category is selected
         }
     };
 
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-        if (e.target.value) {
-            navigate(`/tasks/title/${e.target.value}`);
+    // Handle title search and navigate to the corresponding route
+    const handleTitleChange = async (e) => {
+        const searchTitle = e.target.value;
+        setTitle(searchTitle);
+        if (searchTitle) {
+            // Fetch tasks by title and navigate
+            try {
+                await axiosInstance.get(`/tasks/title/${searchTitle}`);
+                navigate(`/tasks/title/${searchTitle}`);
+            } catch (error) {
+                console.error("Error fetching tasks by title:", error);
+            }
+        } else {
+            navigate('/tasks'); // Fallback to all tasks if no title is entered
         }
     };
 
-    const handleLogout = () => {
-        // Clear the cookie by setting its expiry to a past date
-        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        
-        // Navigate to login page
-        navigate('/login');
+    const handleLogout = async () => {
+        try {
+            // Call the backend logout route
+            await axiosInstance.post('/users/logout');
+            // Clear the token cookie
+            Cookies.remove('token');
+            // Redirect to the login page
+            navigate('/login');
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
     return (
@@ -42,7 +79,6 @@ const Navbar = () => {
             <div className="navbar-container">
                 <h1 className="navbar-logo">Task Manager</h1>
                 <ul className="navbar-menu">
-                    {/* Filter options */}
                     <li>
                         <label htmlFor="priority">Priority:</label>
                         <select id="priority" value={priority} onChange={handlePriorityChange}>
@@ -59,7 +95,7 @@ const Navbar = () => {
                             id="category"
                             value={category}
                             onChange={handleCategoryChange}
-                            placeholder="Enter category ID"
+                            placeholder="Enter category"
                         />
                     </li>
                     <li>
