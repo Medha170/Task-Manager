@@ -20,7 +20,8 @@ router.post('/register', async (req, res) => {
         if (userExists) {
             res.send({
                 success: false,
-                message: "User already exists"
+                message: "User already exists",
+                data: userExists
             });
         }
 
@@ -35,7 +36,8 @@ router.post('/register', async (req, res) => {
 
         res.send({
             success: true,
-            message: "User registered successfully"
+            message: "User registered successfully",
+            data: newUser
         });
     }
     catch (error) {
@@ -53,7 +55,8 @@ router.post('/login', async (req, res) => {
         if (!user) {
             res.send({
                 success: false,
-                message: "User not found"
+                message: "User not found",
+                data: user
             });
         }
 
@@ -61,7 +64,8 @@ router.post('/login', async (req, res) => {
         if (!validPassword) {
             res.send({
                 success: false,
-                message: "Invalid password"
+                message: "Invalid password",
+                data: user
             });
         }
 
@@ -70,7 +74,9 @@ router.post('/login', async (req, res) => {
         res.send({
             success: true,
             message: "User logged in successfully",
-            token: token
+            data: {
+                token: token
+            }
         });
     }
     catch (error) {
@@ -117,7 +123,8 @@ router.post('/forget-password', async function(req, res) {
 
         res.status(200).json({
             status: "success",
-            message: "OTP sent successfully"
+            message: "OTP sent successfully",
+            data: user
         });
 
         await EmailHelper("otp.html", user.email, { name: user.name, otp: otp });
@@ -165,7 +172,8 @@ router.post('/reset-password', async function(req, res) {
 
         res.status(200).json({
             status: "success",
-            message: "Password reset successfully"
+            message: "Password reset successfully",
+            data: user
         });
     }
     catch (error) {
