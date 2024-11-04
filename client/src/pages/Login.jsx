@@ -18,9 +18,15 @@ function Login() {
         try {
             const response = await LoginUser(values);
             if (response.success) {
+                console.log("Token from response:", response.data.token);
                 message.success(response.message);
-                console.log(cookies.token)
-                setCookie('token', response.data.token, { path: '/' , expires: new Date(Date.now() + 1000*60*60*24*7)});
+                setCookie('token', response.data.token, { 
+                  path: '/' , 
+                  expires: new Date(Date.now() + 1000*60*60*24*7),
+                  sameSite: 'lax'
+                });
+                console.log(cookies);
+                console.log("Token from cookies:", cookies.token);
                 navigate('/');
             }
             else {
@@ -73,7 +79,7 @@ function Login() {
                     New User? <Link to="/register">Register Here</Link>
                   </p>
                   <p>
-                    Forgot Password? <Link to="/forget">Click Here</Link>
+                    Forgot Password? <Link to="/forget-password">Click Here</Link>
                   </p>
                 </div>
               </section>

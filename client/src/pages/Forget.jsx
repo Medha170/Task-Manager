@@ -11,7 +11,7 @@ function Forget() {
         if (response.status === "success") {
             message.success(response.message);
             alert("OTP sent to your email");
-            window.location.href = "/reset";
+            window.location.href = "/reset-password";
         }
         else {
             message.error(response.message);

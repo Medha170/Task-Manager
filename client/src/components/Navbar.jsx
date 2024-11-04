@@ -15,7 +15,7 @@ const { Header } = Layout;
 function Navbar() {
     const { user } = useSelector(state => state.user);
     const navigate = useNavigate();
-    const [removeCookie] = useCookies(['token']);
+    const [cookies, setCookie] = useCookies(['token']);
 
     const navItems = [
         {
@@ -50,7 +50,8 @@ function Navbar() {
                         <Link
                            to="/login"
                            onClick={() => {
-                                 removeCookie('token');
+                                setCookie('token', '', { path: '/', expires: new Date(0) });
+                                console.log(cookies);
                            }}
                         >
                             Logout
