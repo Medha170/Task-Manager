@@ -3,89 +3,65 @@ import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ResetPassword } from '../calls/userCalls';
 import { useCookies } from 'react-cookie';
+import './../styles/Auth.css';
 
 function Reset() {
-    const navigate = useNavigate();
-    const [cookies] = useCookies(['token']);
+  const navigate = useNavigate();
+  const [cookies] = useCookies(['token']);
 
-    const onFinish = async (values) => {
-        try {
-            const response = await ResetPassword(values);
-            if (response.status === "success") {
-                message.success(response.message);
-                window.location.href = '/login';
-            }
-            else {
-                message.error(response.message);
-            }
-        }
-        catch (error) {
-            message.error(error.message);
-        }
+  useEffect(() => {
+    if (cookies.token) {
+      navigate('/');
     }
+  }, [cookies.token, navigate]);
 
-    useEffect(() => {
-        if (cookies.token) {
-            navigate('/');
-        }
-    }, [cookies.token, navigate]);
+  const onFinish = async (values) => {
+    try {
+      const response = await ResetPassword(values);
+      if (response.status === 'success') {
+        message.success(response.message);
+        navigate('/login');
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
 
-    return (
-        <>
-            <header className="App-header">
-                <main className="main-area mw-500 text-center px-3">
-                    <section className="left-section">
-                        <h1>Reset Password</h1>
-                    </section>
-                    <section className="right-section">
-                        <Form layout="vertical" onFinish={onFinish}>
+  return (
+    <div className="main-area mw-500 text-center px-3">
+      <h1>Reset Password</h1>
+      <Form layout="vertical" onFinish={onFinish} className="auth-form">
+        <Form.Item
+          label="OTP"
+          name="otp"
+          rules={[{ required: true, message: 'OTP is required' }]}
+        >
+          <Input type="number" placeholder="Enter your OTP" />
+        </Form.Item>
 
-                            <Form.Item
-                                label="OTP"
-                                htmlFor="otp"
-                                name="otp"
-                                className="d-block"
-                                rules={[{ required: true, message: "OTP is required" }]}
-                            >
-                                <Input
-                                    id="otp"
-                                    type="number"
-                                    placeholder="Enter your otp"
-                                ></Input>
-                            </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Password is required' }]}
+        >
+          <Input type="password" placeholder="Enter your Password" />
+        </Form.Item>
 
-                            <Form.Item
-                                label="Password"
-                                htmlFor="password"
-                                name="password"
-                                className="d-block"
-                                rules={[{ required: true, message: "Password is required" }]}
-                            >
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="Enter your Password"
-
-                                ></Input>
-                            </Form.Item>
-                            <Form.Item className="d-block">
-                                <Button
-                                    type="primary"
-                                    block
-                                    htmlType="submit"
-                                    style={{ fontSize: "1rem", fontWeight: "600" }}
-                                >
-                                    RESET PASSWORD
-                                </Button>
-                            </Form.Item>
-                        </Form>
-
-                    </section>
-                </main>
-            </header>
-        </>
-    )
+        <Form.Item>
+          <Button
+            type="primary"
+            block
+            htmlType="submit"
+            style={{ fontSize: '1rem', fontWeight: '600' }}
+          >
+            RESET PASSWORD
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
 }
-
 
 export default Reset;

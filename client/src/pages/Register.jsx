@@ -3,106 +3,76 @@ import { Form, Input, Button, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../calls/userCalls';
 import { useCookies } from 'react-cookie';
-
+import './../styles/Auth.css';
 
 function Register() {
-    const onFinish = async (values) => {
-        console.log(values);
-        try{
-            const response = await RegisterUser(values);
-            if (response.success) {
-                message.success(response.message);
-                window.location.href = '/login';
-            }
-            else {
-                message.error(response.message);
-            }
-        }
-        catch (error) {
-            message.error(error.message);
-        }
+  const navigate = useNavigate();
+  const [cookies] = useCookies(['token']);
+
+  useEffect(() => {
+    if (cookies.token) {
+      navigate('/');
     }
+  }, [cookies.token, navigate]);
 
-    const navigate = useNavigate();
-    const [cookies] = useCookies(['token']);
+  const onFinish = async (values) => {
+    try {
+      const response = await RegisterUser(values);
+      if (response.success) {
+        message.success(response.message);
+        navigate('/login');
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
 
-    useEffect(() => {
-        if (cookies.token) {
-            navigate('/');
-        }
-    }, [cookies.token, navigate]);
+  return (
+    <div className="main-area mw-500 text-center px-3">
+      <h1>Register to Task Manager</h1>
+      <Form layout="vertical" onFinish={onFinish} className="auth-form">
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Name is required!' }]}
+        >
+          <Input placeholder="Enter your name" />
+        </Form.Item>
+        
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Email is required!' }]}
+        >
+          <Input type="email" placeholder="Enter your email" />
+        </Form.Item>
+        
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Password is required!' }]}
+        >
+          <Input type="password" placeholder="Enter your password" />
+        </Form.Item>
 
-    return (
-        <>
-          <header className="App-header">
-            <main className="main-area mw-500 text-center px-3">
-              <section className="left-section">
-                <h1>Register to Task Manager</h1>
-              </section>
-              <section className="right-section">
-                <Form layout="vertical" onFinish={onFinish}>
-                  <Form.Item
-                    label="Name"
-                    htmlFor="name"
-                    name="name"
-                    className="d-block"
-                    rules={[{ required: true, message: "Name is required!" }]}
-                  >
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="Enter your name"
-                      rules={[{ required: true, message: "Email is required!" }]}
-                    ></Input>
-                  </Form.Item>
-                  <Form.Item
-                    label="Email"
-                    htmlFor="email"
-                    name="email"
-                    className="d-block"
-                    rules={[{ required: true, message: "Email is required!" }]}
-                  >
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                    ></Input>
-                  </Form.Item>
-                  <Form.Item
-                    label="Password"
-                    htmlFor="password"
-                    name="password"
-                    className="d-block"
-                    rules={[{ required: true, message: "Password is required!" }]}
-                  >
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Enter the password"
-                    ></Input>
-                  </Form.Item>
-    
-                  <Form.Item>
-                    <Button
-                      block
-                      type="primary"
-                      htmlType="submit"
-                      style={{ fontSize: "1rem", fontWeight: "600" }}
-                    >
-                      Sign Up
-                    </Button>
-                  </Form.Item>
-                </Form>
-                <div>
-                  <p>
-                    Already a user? <Link to="/login">Login now</Link>
-                  </p>
-                </div>
-              </section>
-            </main>
-          </header>
-        </>
-      );
+        <Form.Item>
+          <Button
+            block
+            type="primary"
+            htmlType="submit"
+            style={{ fontSize: '1rem', fontWeight: '600' }}
+          >
+            Sign Up
+          </Button>
+        </Form.Item>
+      </Form>
+      <p>
+        Already a user? <Link to="/login">Login now</Link>
+      </p>
+    </div>
+  );
 }
 
 export default Register;

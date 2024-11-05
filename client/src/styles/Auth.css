@@ -1,0 +1,79 @@
+/* Auth.css */
+
+/* Main container styling */
+.main-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #161625;
+    padding: 20px;
+    color: #ffffff;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+  
+  /* Form styling */
+  .ant-form-item-label > label {
+    color: #ffcccb !important; /* Brighter color for labels */
+    font-size: 1rem;
+  }
+  
+  .ant-input {
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #222244 !important; /* Lighter, high-contrast background */
+    color: #ffffff !important;
+    border: 1px solid #3399ff; /* Brighter border for contrast */
+  }
+  
+  .ant-input::placeholder {
+    color: #b0b0b0; /* Lighter placeholder text */
+  }
+  
+  .ant-input:focus {
+    border-color: #4db8ff;
+    box-shadow: 0 0 8px rgba(77, 184, 255, 0.6);
+  }
+  
+  .ant-form-item {
+    margin-bottom: 15px;
+  }
+  
+  /* Button styling */
+  .ant-btn-primary {
+    background-color: #3399ff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .ant-btn-primary:hover {
+    background-color: #007acc;
+  }
+  
+  /* Link styling */
+  a {
+    color: #9a6ce7;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  a:hover {
+    color: #b17cff;
+  }
+  
+  p {
+    margin: 10px 0;
+    font-size: 0.9rem;
+  }
+  
