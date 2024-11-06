@@ -9,6 +9,7 @@ const dbConfig = require('./config/db');
 const app = express();
 
 const userRoutes = require('./routes/userRoute');
+const taskRoutes = require('./routes/taskRoutes');
 
 app.use(cors(
     {
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/users', userRoutes);
+app.use('/api/tasks', taskRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
