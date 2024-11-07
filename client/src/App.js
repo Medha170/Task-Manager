@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Reset from './pages/Reset';
 import Forget from './pages/Forget';
 import Category from './pages/Category';
+import Notification from './pages/Notification';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useSelector } from 'react-redux';
 
@@ -40,6 +41,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Category />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notification />
                 </ProtectedRoute>
               }
             />

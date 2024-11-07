@@ -1,15 +1,17 @@
-import React from 'react';
-import { Menu, Layout } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { List, Button, Menu, Dropdown, Badge, Layout } from 'antd';
 import { useNavigate, Link } from 'react-router-dom';
 import {
     HomeOutlined,
     LogoutOutlined,
     ProfileOutlined,
     UserOutlined,
-    UnorderedListOutlined
+    UnorderedListOutlined,
+    BellOutlined
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
+import { GetNotifications, MarkNotificationAsRead } from '../calls/notificationCalls';
 import './../styles/Navbar.css';
 
 const { Header } = Layout;
@@ -18,6 +20,38 @@ function Navbar() {
     const { user } = useSelector(state => state.user);
     const navigate = useNavigate();
     const [setCookie] = useCookies(['token']);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            const response = await GetNotifications();
+
+            if (response.success) {
+                setNotifications(response.data);
+                setUnreadCount(response.data.filter(notification => !notification.isRead).length);
+            }
+        }
+
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 30000); // Fetch notifications every 30 seconds
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleMarkAsRead = async (id) => {
+        const response = await MarkNotificationAsRead(id);
+
+        if (response.success) {
+            setNotifications((prevNotifications) =>
+              prevNotifications.map((notification) =>
+                notification._id === id
+                  ? { ...notification, isRead: true }
+                  : notification
+              )
+            );
+            setUnreadCount((count) => count - 1);
+        }
+    }
 
     const navItems = [
         {
@@ -70,6 +104,29 @@ function Navbar() {
             ]
         } : null // Conditionally render profile items only if the user is logged in
     ].filter(item => item !== null); // Filter out null items
+
+    const notificationDropdown = (
+        <div style={{ width: 300 }}>
+          <List
+            itemLayout="horizontal"
+            dataSource={notifications.slice(0, 5)}
+            renderItem={(notification) => (
+              <List.Item
+                actions={[
+                  <Button type="link" onClick={() => handleMarkAsRead(notification._id)}>
+                    Mark as Read
+                  </Button>,
+                ]}
+              >
+                <List.Item.Meta title={notification.title} description={notification.message} />
+              </List.Item>
+            )}
+          />
+          <Button type="link" onClick={() => navigate("/notifications")} style={{ width: "100%", textAlign: "center" }}>
+            View All
+          </Button>
+        </div>
+      );
     
 
     return (
@@ -95,6 +152,20 @@ function Navbar() {
             items={navItems}
             style={{ flexGrow: 1, justifyContent: 'flex-end', width: 'auto' }} // Menu will stretch and justify content properly
           />
+
+           <Dropdown 
+             overlay={notificationDropdown} 
+             trigger={['click']}
+            >
+                <Badge 
+                   count={unreadCount} 
+                   offset={[-10, 10]}
+                >
+                <BellOutlined 
+                    style={{ fontSize: 15, color: 'white', cursor: 'pointer' }} 
+                />
+                </Badge>
+           </Dropdown>
         </Header>
     );
 } 
