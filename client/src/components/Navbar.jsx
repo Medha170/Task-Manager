@@ -6,6 +6,7 @@ import {
     LogoutOutlined,
     ProfileOutlined,
     UserOutlined,
+    UnorderedListOutlined
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
@@ -16,15 +17,21 @@ const { Header } = Layout;
 function Navbar() {
     const { user } = useSelector(state => state.user);
     const navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(['token']);
+    const [setCookie] = useCookies(['token']);
 
     const navItems = [
         {
             label: "Home",
             icon: <HomeOutlined />,
+            onClick: () => navigate("/")
         },
         {
-            label: `${user ? user.data.name : ""}`,
+            label: "Categories",
+            icon: <UnorderedListOutlined />,
+            onClick: () => navigate("/categories")
+        },
+        user ? {
+            label: `${user.data.name}`,
             icon: <UserOutlined />,
             children: [
                 {
@@ -52,7 +59,7 @@ function Navbar() {
                            to="/login"
                            onClick={() => {
                                 setCookie('token', '', { path: '/', expires: new Date(0) });
-                                console.log(cookies);
+                                navigate('/login'); // Redirect to login page
                            }}
                         >
                             Logout
@@ -61,8 +68,9 @@ function Navbar() {
                     icon: <LogoutOutlined />
                 }
             ]
-        }
-    ];
+        } : null // Conditionally render profile items only if the user is logged in
+    ].filter(item => item !== null); // Filter out null items
+    
 
     return (
         <Header

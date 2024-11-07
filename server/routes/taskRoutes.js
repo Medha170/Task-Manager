@@ -11,7 +11,7 @@ router.post('/create-task', authmiddleware, async (req, res) => {
             description: req.body.description,
             dueDate: req.body.dueDate,
             priority: req.body.priority,
-            categoryID: req.body.categoryID,
+            categoryID: req.body.category,
             userID: req.body.userId
         })
 

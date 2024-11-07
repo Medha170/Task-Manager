@@ -1,11 +1,36 @@
-import React from 'react';
-import { Button, Form, Input, DatePicker, Select } from 'antd';
+import React, {useState, useEffect} from 'react';
+import { Button, Form, Input, DatePicker, Select, Modal } from 'antd';
 import moment from 'moment';
+import { GetCategories, CreateCategory } from '../calls/categoryCalls';
 
 const { Option } = Select;
 
 const TaskForm = ({ initialValues, onFinish }) => {
     console.log(initialValues);
+    const [categories, setCategories] = useState([]);
+    const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+    const [newCategory, setNewCategory] = useState('');
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        const response = await GetCategories();
+        if (response.success) {
+            setCategories(response.data);
+        }
+    }
+
+    const handleCategoryCreate = async () => {
+        const response = await CreateCategory({ categoryName: newCategory });
+        if (response.success) {
+            setCategories([...categories, response.data]);
+            setNewCategory('');
+            setIsCategoryModalVisible(false);
+        }
+    };
+
     return (
         <Form
             layout='vertical'
@@ -51,11 +76,41 @@ const TaskForm = ({ initialValues, onFinish }) => {
                 </Select>
             </Form.Item>
 
+            <Form.Item
+                label='Category'
+                name="category"
+                rules={[{ required: true, message: 'Please select a category' }]}
+            >
+                <Select placeholder='Select a category' onChange= {(value) => {
+                    if (value === 'Others') {
+                        setIsCategoryModalVisible(true);
+                    }
+                }}>
+                    {categories.map((category) => (
+                        <Option key={category._id} value={category._id}>{category.categoryName}</Option>
+                    ))}
+                    <Option value='Others'>Others</Option>
+                </Select>
+            </Form.Item>
+
             <Form.Item>
                 <Button type="primary" htmlType="submit">
                     {initialValues ? 'Update Task' : 'Create Task'}
                 </Button>
             </Form.Item>
+
+            <Modal
+                title="Create New Category"
+                open={isCategoryModalVisible}
+                onOk={handleCategoryCreate}
+                onCancel={() => setIsCategoryModalVisible(false)}
+            >
+                <Input 
+                    placeholder="Category name"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                />
+            </Modal>
         </Form>
     );
 };

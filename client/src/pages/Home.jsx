@@ -138,6 +138,7 @@ const Home = () => {
               <p><b>Description:</b> {task.description}</p>
               <p><b>Due Date:</b> {moment(task.dueDate).format('YYYY-MM-DD')}</p>
               <p><b>Priority:</b> <span style={{ color: getPriorityColor(task.priority) }}>{task.priority}</span></p>
+              <p><b>Category:</b> {task.categoryID.categoryName}</p>
             </Card>
           </List.Item>
           
@@ -154,6 +155,7 @@ const Home = () => {
             title: editingTask.title,
             description: editingTask.description,
             dueDate: moment(editingTask.dueDate),
+            categoryID: editingTask.categoryID._id,
             priority: editingTask.priority
           } : null }
           onFinish={handleSubmit}
