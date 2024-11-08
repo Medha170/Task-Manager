@@ -11,9 +11,12 @@ const progressSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    progress: {
+    completionPercentage: {
         type: Number,
-        required: true
+        required: true,
+        min: 0,
+        max: 100,
+        default: 0
     }
 }, { timestamps: true });
 

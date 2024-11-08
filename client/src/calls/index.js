@@ -3,34 +3,44 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
+// Creating axios instance
+export const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3000',
+    withCredentials: true,
+});
+
 export const useAxiosInterceptor = () => {
     const navigate = useNavigate();
-    const [setCookie] = useCookies(['token']); // `setCookie` for managing cookies
+    const [, , removeCookie] = useCookies(['token']); // Use `removeCookie` to remove the token from cookies
 
-    axios.interceptors.response.use(
+    // Interceptor to handle responses and navigate on error
+    axiosInstance.interceptors.response.use(
         response => response, // Return the response as-is if there's no error
         error => {
-            // Check if the error is due to an expired or invalid token
             if (error.response && error.response.status === 401) {
                 // Clear the token from cookies
-                setCookie('token', '', { path: '/', expires: new Date(0) });
-
-                // Redirect to the login page
-                navigate('/login');
+                removeCookie('token', { path: '/' });
+                Cookies.remove('token'); // Use js-cookie as a fallback
 
                 // Optionally, display a message to the user
                 alert("Session expired, please log in again.");
+
+                // Redirect the user to the login page
+                navigate('/login');
             }
             return Promise.reject(error);
         }
     );
-};
 
-export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3000',
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Cookies.get('token')
-    }
-})
+    // Attach token dynamically before each request
+    axiosInstance.interceptors.request.use(
+        config => {
+            const token = Cookies.get('token');
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`; // Attach token if it exists
+            }
+            return config;
+        },
+        error => Promise.reject(error)
+    );
+};

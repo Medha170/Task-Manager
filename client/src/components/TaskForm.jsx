@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Form, Input, DatePicker, Select, Modal } from 'antd';
+import { Button, Form, Input, DatePicker, Select, Modal, Slider } from 'antd';
 import moment from 'moment';
 import { GetCategories, CreateCategory } from '../calls/categoryCalls';
 
@@ -91,6 +91,16 @@ const TaskForm = ({ initialValues, onFinish }) => {
                     ))}
                     <Option value='Others'>Others</Option>
                 </Select>
+            </Form.Item>
+
+            <Form.Item
+                label='Progress'
+                name="progress"
+                >
+                <Slider
+                    min={0}
+                    max={100}
+                    />
             </Form.Item>
 
             <Form.Item>

@@ -4,12 +4,15 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, RedoOutlined } from '@ant-d
 import { GetTasks, CreateTask, UpdateTask, DeleteTask } from '../calls/taskCalls';
 import moment from 'moment';
 import TaskForm from './../components/TaskForm';
+import ProgressBar from '../components/ProgressBar';
+import { GetProgress } from '../calls/progressCalls';
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [taskProgress, setTaskProgress] = useState(0);
 
   useEffect(() => {
     fetchTasks();
@@ -21,6 +24,7 @@ const Home = () => {
       const response = await GetTasks();
       if (response.success) {
         setTasks(response.data);
+        fetchProgress(response.data);
       } else {
         message.error(response.message);
       }
@@ -29,6 +33,17 @@ const Home = () => {
       message.error(error.message);
     }
     setLoading(false);
+  }
+
+  const fetchProgress = async (tasks) => {
+    const progressData = {};
+    for (let task of tasks) {
+      const response = await GetProgress(task._id);
+      if (response.success) {
+        progressData[task._id] = response.data.completionPercentage;
+      }
+    }
+    setTaskProgress(progressData);
   }
 
   const openModal = (task = null) => {
@@ -139,6 +154,15 @@ const Home = () => {
               <p><b>Due Date:</b> {moment(task.dueDate).format('YYYY-MM-DD')}</p>
               <p><b>Priority:</b> <span style={{ color: getPriorityColor(task.priority) }}>{task.priority}</span></p>
               <p><b>Category:</b> {task.categoryID.categoryName}</p>
+
+              {/* Add ProgressBar component */}
+              <div style={{ marginTop: '1rem' }}>
+                <b>Progress:</b>
+                <ProgressBar
+                  taskId={task._id}
+                  initialProgress={taskProgress[task._id] || 0} // Pass initial progress if available
+                />
+              </div>
             </Card>
           </List.Item>
           
