@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, Card, Button, message, Modal } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined, RedoOutlined } from '@ant-design/icons';
+import FilterBar from './../components/Filterbar'; // Import FilterBar
 import { GetTasks, CreateTask, UpdateTask, DeleteTask } from '../calls/taskCalls';
 import moment from 'moment';
 import TaskForm from './../components/TaskForm';
 import ProgressBar from '../components/ProgressBar';
-import { GetProgress } from '../calls/progressCalls';
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -20,41 +21,43 @@ const Home = () => {
 
   const fetchTasks = async () => {
     setLoading(true);
-    try{
+    try {
       const response = await GetTasks();
-      if (response.success) {
+      if (response?.success) {
         setTasks(response.data);
-        fetchProgress(response.data);
+        setFilteredTasks(response.data); // Initialize filtered tasks with all tasks
       } else {
-        message.error(response.message);
+        message.error(response?.message);
       }
-    }
-    catch (error) {
+    } catch (error) {
       message.error(error.message);
     }
     setLoading(false);
-  }
+  };
 
-  const fetchProgress = async (tasks) => {
-    const progressData = {};
-    for (let task of tasks) {
-      const response = await GetProgress(task._id);
-      if (response.success) {
-        progressData[task._id] = response.data.completionPercentage;
-      }
+  const handleFilterChange = ({ category, priority }) => {
+    let filtered = tasks;
+    if (category) {
+      filtered = filtered.filter(task => task.categoryID._id === category);
     }
-    setTaskProgress(progressData);
-  }
+    if (priority) {
+      filtered = filtered.filter(task => task.priority === priority);
+    }
+    setFilteredTasks(filtered);
+  };
 
   const openModal = (task = null) => {
     setEditingTask(task);
     setIsModalVisible(true);
-  }
+  };
+
+  const isExpired = (task) => {
+    return new Date(task.dueDate) < new Date();
+  };
 
   const handleSubmit = async (values) => {
     try {
       if (editingTask) {
-        // Update Task
         const response = await UpdateTask(editingTask._id, values);
         if (response.success) {
           message.success('Task updated successfully');
@@ -63,9 +66,7 @@ const Home = () => {
         } else {
           message.error(response.message);
         }
-      }
-      else{
-        // Create a new Task
+      } else {
         const response = await CreateTask(values);
         if (response.success) {
           message.success('Task created successfully');
@@ -74,12 +75,11 @@ const Home = () => {
           message.error(response.message);
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       message.error(error.message);
     }
     setIsModalVisible(false);
-  }
+  };
 
   const handleDeleteTask = async (taskID) => {
     try {
@@ -90,11 +90,10 @@ const Home = () => {
       } else {
         message.error(response.message);
       }
-    }
-    catch (error) {
+    } catch (error) {
       message.error(error.message);
     }
-  }
+  };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -107,11 +106,14 @@ const Home = () => {
       default:
         return 'blue';
     }
-  }
+  };
 
   return (
     <div className='task-page'>
       <h1 className='page-title' style={{ marginBottom: '1rem', color: 'black' }}>Your Tasks</h1>
+
+      {/* Filter Bar */}
+      <FilterBar onFilterChange={handleFilterChange} />
 
       {/* Button to open the modal for creating a new task */}
       <Button
@@ -120,7 +122,7 @@ const Home = () => {
         icon={<PlusOutlined />}
         loading={loading}
         style={{ marginBottom: '1rem', marginLeft: '0.5rem' }}
-        >
+      >
         Add Task
       </Button>
 
@@ -130,17 +132,17 @@ const Home = () => {
         icon={<RedoOutlined />}
         loading={loading}
         style={{ marginBottom: '1rem', marginLeft: '0.5rem' }}
-        >
+      >
         Refresh Tasks
       </Button>
-        
+
       {/* List of tasks */}
       <List
         grid={{ gutter: 16, column: 3 }}
         loading={loading}
-        dataSource={tasks}
+        dataSource={filteredTasks}
         renderItem={task => (
-          <List.Item>
+            <List.Item>
             <Card
               title={task.title}
               extra={
@@ -154,20 +156,20 @@ const Home = () => {
               <p><b>Due Date:</b> {moment(task.dueDate).format('YYYY-MM-DD')}</p>
               <p><b>Priority:</b> <span style={{ color: getPriorityColor(task.priority) }}>{task.priority}</span></p>
               <p><b>Category:</b> {task.categoryID.categoryName}</p>
+              <p><b>Status:</b> {isExpired(task) ? 'Expired' : 'Active'}</p>
 
-              {/* Add ProgressBar component */}
               <div style={{ marginTop: '1rem' }}>
                 <b>Progress:</b>
                 <ProgressBar
                   taskId={task._id}
-                  initialProgress={taskProgress[task._id] || 0} // Pass initial progress if available
+                  initialProgress={taskProgress}
                 />
               </div>
             </Card>
           </List.Item>
-          
         )}
       />
+
       <Modal
         title={editingTask ? 'Edit Task' : 'Create a new Task'}
         open={isModalVisible}
@@ -186,7 +188,7 @@ const Home = () => {
         />
       </Modal>
     </div>
-  )
+  );
 };
 
 export default Home;

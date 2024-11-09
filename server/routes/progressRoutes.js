@@ -3,12 +3,11 @@ const Progress = require('../models/Progress');
 const authMiddleware = require('../middlewares/authmiddleware');
 const router = express.Router();
 
-
 // Update task Progress
 router.put('/update-progress/:taskID', authMiddleware, async (req, res) => {
     try {
-        const {taskID} = req.params;
-        const {completionPercentage} = req.body;
+        const { completionPercentage } = req.body;
+        const { taskID } = req.params;
         const userID = req.body.userId;
 
         if (completionPercentage < 0 || completionPercentage > 100) {
@@ -18,10 +17,10 @@ router.put('/update-progress/:taskID', authMiddleware, async (req, res) => {
             });
         }
 
-        const progress = await Progress.findByIdAndUpdate(
-            {taskID: taskID, userID: userID},
-            {completionPercentage: completionPercentage},
-            {new: true, upsert: true}
+        const progress = await Progress.findOneAndUpdate(
+            { taskID: taskID, userID: userID },
+            { completionPercentage: completionPercentage },
+            { new: true, upsert: true }
         );
 
         res.send({
@@ -29,8 +28,7 @@ router.put('/update-progress/:taskID', authMiddleware, async (req, res) => {
             message: 'Progress updated successfully',
             data: progress
         });
-    }
-    catch (error) {
+    } catch (error) {
         res.send({
             success: false,
             message: error.message
@@ -52,6 +50,8 @@ router.get('/get-progress/:taskID', authMiddleware, async (req, res) => {
                 message: 'Progress not found'
             });
         }
+
+        console.log(progress);
 
         res.send({
             success: true,

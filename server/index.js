@@ -15,7 +15,9 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 
 const notificationService = require('./service/notificationService');
+const autoDeletionService = require('./service/autoDeletionService');
 notificationService.start();
+autoDeletionService.start();
 
 app.use(cors(
     {

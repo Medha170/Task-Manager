@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Slider, Progress, message } from 'antd';
-import { UpdateProgress } from '../calls/progressCalls';
-import { useSelector } from 'react-redux';
+import { UpdateProgress, GetProgress } from '../calls/progressCalls';
 
 function ProgressBar({ taskId, initialProgress }) {
-    const [progress, setProgress] = useState(initialProgress);
-    const { user } = useSelector(state => state.user);
+    const [progress, setProgress] = useState(initialProgress || 0);
 
-    const handleSliderChange = value => {
+    useEffect(() => {
+        const fetchProgress = async () => {
+            try {
+                const response = await GetProgress(taskId);
+                if (response.success) {
+                    setProgress(response.data.completionPercentage);
+                }
+            } catch (error) {
+                message.error('Failed to fetch progress');
+            }
+        };
+        fetchProgress();
+    }, [taskId]);
+
+    const handleSliderChange = (value) => {
         setProgress(value);
-    }
+    };
 
     const handleSliderAfterChange = async (value) => {
-        try{
-            await UpdateProgress(taskId, value, user);
+        try {
+            await UpdateProgress(taskId, { completionPercentage: value });
             message.success('Progress updated successfully');
+            setProgress(value); // Update UI immediately
+        } catch (error) {
+            message.error('Failed to update progress');
         }
-        catch(error){
-            message.error(error.message);
-        }
-    }
+    };
 
     return (
         <div>

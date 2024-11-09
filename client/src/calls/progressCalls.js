@@ -10,9 +10,9 @@ export const GetProgress = async (taskID) => {
     }
 }
 
-export const UpdateProgress = async (taskID, value) => {
+export const UpdateProgress = async (taskID, {completionPercentage}) => {
     try {
-        const response = await axiosInstance.put(`/api/progress/update-progress/${taskID}`, value);
+        const response = await axiosInstance.put(`/api/progress/update-progress/${taskID}`, {completionPercentage});
         return response.data;
     }
     catch (error) {
