@@ -1,0 +1,60 @@
+/* Main container styling */
+.notification-page {
+    padding: 2rem;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+}
+
+/* Title styling */
+.notification-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* List item styling */
+.ant-list-item {
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.ant-list-item:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Meta title and description styling */
+.ant-list-item-meta-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.ant-list-item-meta-description {
+    font-size: 14px;
+    color: #999;
+}
+
+/* Button styling */
+.ant-btn-primary {
+    background-color: #1890ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.ant-btn-primary:hover {
+    background-color: #40a9ff;
+}
+
+.ant-btn[disabled] {
+    background-color: #d9d9d9;
+    color: #666;
+    cursor: not-allowed;
+}

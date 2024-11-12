@@ -9,6 +9,7 @@ import Forget from './pages/Forget';
 import Category from './pages/Category';
 import Notification from './pages/Notification';
 import ProtectedRoute from './components/ProtectedRoute';
+import Profile from './pages/Profile';
 import { useSelector } from 'react-redux';
 import { useAxiosInterceptor } from './calls';
 
@@ -65,6 +66,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Notification />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

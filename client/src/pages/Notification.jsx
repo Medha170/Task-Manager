@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { List, Button, message, Typography } from 'antd';
 import { GetNotifications, MarkNotificationAsRead } from '../calls/notificationCalls';
+import './../styles/Notification.css';
 
 const { Title } = Typography;
 
@@ -36,15 +37,19 @@ const Notification = () => {
     };
 
     return (
-        <div style={{ padding: '2rem' }}>
-            <Title level={3}>Notifications</Title>
+        <div className="notification-page">
+            <Title level={3} className="notification-title">Notifications</Title>
             <List
                 loading={loading}
                 dataSource={notifications}
                 renderItem={(notification) => (
                     <List.Item
                         actions={[
-                            <Button type="primary" onClick={() => handleMarkAsRead(notification._id)} disabled={notification.read}>
+                            <Button
+                                type="primary"
+                                onClick={() => handleMarkAsRead(notification._id)}
+                                disabled={notification.read}
+                            >
                                 {notification.read ? 'Read' : 'Mark as read'}
                             </Button>
                         ]}
@@ -57,7 +62,7 @@ const Notification = () => {
                 )}
             />
         </div>
-    );
+    );    
 };
 
 export default Notification;

@@ -1,0 +1,72 @@
+/* Main container styling */
+.category-container {
+    padding: 20px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+}
+
+/* Add Category button */
+.add-category-button {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+/* Card styling */
+.category-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    text-align: left;
+}
+
+.category-card-title {
+    color: #3399ff;
+    font-weight: bold;
+}
+
+/* Edit and Delete buttons in Card */
+.category-edit-button {
+    color: #3399ff !important;
+}
+
+.category-delete-button {
+    color: #ff4d4f !important;
+}
+
+/* Modal styling */
+.category-modal {
+    background-color: #1d1d2f !important;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+.category-modal .ant-modal-title {
+    color: #ffffff;
+}
+
+/* Form styling inside modal */
+.category-form {
+    color: #ffffff;
+}
+
+.category-form-item {
+    color: #ffffff;
+}
+
+/* Input field styling */
+.category-input {
+    background-color: #222244;
+    color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #3399ff;
+}
+
+/* Submit button inside modal */
+.category-submit-button {
+    width: 100%;
+    background-color: #3399ff;
+    border-radius: 8px;
+    font-weight: bold;
+}

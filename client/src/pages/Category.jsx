@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { List, Card, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { GetCategories, CreateCategory, UpdateCategory, DeleteCategory } from '../calls/categoryCalls';
+import './../styles/CategoryPage.css';
 
 const Category = () => {
     const [categories, setCategories] = useState([]);
@@ -69,12 +70,12 @@ const Category = () => {
     };
 
     return (
-        <div>
+        <div className="category-container">
             <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => openModal()}
-                style={{ marginBottom: '1rem' }}
+                className="add-category-button"
             >
                 Add Category
             </Button>
@@ -86,24 +87,27 @@ const Category = () => {
                 renderItem={(category) => (
                     <List.Item>
                         <Card
-                            title={category.categoryName}
+                            title={<span className="category-card-title">{category.categoryName}</span>}
+                            bordered={false}
+                            className="category-card"
                             extra={
                                 <div>
                                     <Button
-                                        type='link'
+                                        type="link"
                                         icon={<EditOutlined />}
                                         onClick={() => openModal(category)}
+                                        className="category-edit-button"
                                     />
                                     <Button
-                                        type='link'
+                                        type="link"
                                         icon={<DeleteOutlined />}
                                         onClick={() => handleDelete(category._id)}
                                         danger
+                                        className="category-delete-button"
                                     />
                                 </div>
                             }
-                        >
-                        </Card>
+                        />
                     </List.Item>
                 )}
             />
@@ -116,21 +120,31 @@ const Category = () => {
                     setEditingCategory(null);
                 }}
                 footer={null}
+                centered
+                bodyStyle={{
+                    padding: '20px'
+                }}
+                className="category-modal"
             >
                 <Form
                     layout="vertical"
                     onFinish={handleSubmit}
-                    initialValues={editingCategory || { categoryName: ''}}
+                    initialValues={editingCategory || { categoryName: '' }}
+                    className="category-form"
                 >
                     <Form.Item
                         label="Category Name"
                         name="categoryName"
                         rules={[{ required: true, message: 'Please enter a category name' }]}
+                        className="category-form-item"
                     >
-                        <Input />
+                        <Input
+                            placeholder="Enter category name"
+                            className="category-input"
+                        />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" className="category-submit-button">
                             {editingCategory ? 'Update' : 'Create'}
                         </Button>
                     </Form.Item>

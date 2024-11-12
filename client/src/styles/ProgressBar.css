@@ -1,0 +1,35 @@
+/* ProgressBar.css */
+
+.progress-bar-container {
+    padding: 16px;
+    background-color: #f0f2f5; /* Light grey background */
+    border-radius: 8px; /* Rounded corners for container */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+    margin: 16px 0; /* Space around the component */
+    max-width: 400px; /* Limit the width to make it more compact */
+}
+
+.progress-bar-container .ant-progress {
+    margin-bottom: 16px; /* Space between progress bar and slider */
+}
+
+.progress-bar-container .ant-slider {
+    margin: 0 8px; /* Padding around the slider */
+}
+
+.progress-bar-container .ant-slider-track {
+    background-color: #1890ff; /* Custom color for the slider track */
+}
+
+.progress-bar-container .ant-slider-handle {
+    border-color: #1890ff; /* Custom color for the slider handle */
+    box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.2); /* Shadow for focus */
+}
+
+.progress-bar-container .ant-slider:hover .ant-slider-track {
+    background-color: #40a9ff; /* Lighter blue on hover */
+}
+
+.progress-bar-container .ant-progress-inner {
+    background-color: #e6f7ff; /* Lighter background for progress */
+}

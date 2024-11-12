@@ -1,0 +1,95 @@
+/* Main container styling */
+.task-form-container {
+    background-color: #161625 !important;
+    padding: 24px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    max-width: 500px !important;
+    margin: auto !important;
+}
+
+/* Form label colors for consistency */
+.task-form-container .ant-form-item-label > label {
+    color: #ffcccb !important;
+    font-size: 0.9rem !important;
+}
+
+/* Input, TextArea, Select, and DatePicker styling */
+.task-form-container .ant-input,
+.task-form-container .ant-input-textarea,
+.task-form-container .ant-select-selector,
+.task-form-container .ant-picker {
+    background-color: #1d1d2f !important;
+    color: #ffffff !important;
+    border: 1px solid #4db8ff !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    margin-bottom: 12px !important;
+    transition: border-color 0.3s, box-shadow 0.3s !important;
+}
+
+.task-form-container .ant-input::placeholder,
+.task-form-container .ant-input-textarea::placeholder,
+.task-form-container .ant-select-selection-placeholder,
+.task-form-container .ant-picker-input input::placeholder {
+    color: #b0b0b0 !important;
+}
+
+/* Focus and hover effects */
+.task-form-container .ant-input:focus,
+.task-form-container .ant-select-selector:focus,
+.task-form-container .ant-picker-focused .ant-picker,
+.task-form-container .ant-picker:hover,
+.task-form-container .ant-select-selector:hover {
+    border-color: #66c2ff !important;
+    box-shadow: 0 0 8px rgba(102, 194, 255, 0.6) !important;
+}
+
+/* Button styling consistent with Auth.css */
+.task-form-container .ant-btn-primary {
+    background-color: #3399ff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    padding: 10px 20px !important;
+    transition: background-color 0.3s ease, transform 0.1s ease !important;
+    margin-top: 10px !important;
+}
+
+.task-form-container .ant-btn-primary:hover {
+    background-color: #007acc !important;
+    transform: scale(1.05) !important;
+}
+
+/* Modal styling for consistency */
+.task-form-container .ant-modal-content,
+.task-form-container .ant-modal-header {
+    background-color: #161625 !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+}
+
+.task-form-container .ant-modal-title {
+    color: #ffffff !important;
+    font-size: 1.2rem !important;
+}
+
+.task-form-container .ant-modal-close-x {
+    color: #ffffff !important;
+}
+
+/* Category modal input styling */
+.task-form-container .category-modal .ant-input {
+    background-color: #222244 !important;
+    color: #ffffff !important;
+    border: 1px solid #3399ff !important;
+    border-radius: 4px !important;
+}
+
+.task-form-container .category-modal .ant-input:focus {
+    border-color: #4db8ff !important;
+    box-shadow: 0 0 8px rgba(77, 184, 255, 0.6) !important;
+}

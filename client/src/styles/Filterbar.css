@@ -1,6 +1,40 @@
+/* Filterbar.css */
+
 .filter-bar {
     display: flex;
-    justify-content: flex-start;
-    margin-bottom: 1rem;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5; /* Light background color for contrast */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+    margin-bottom: 16px; /* Space below filter bar */
 }
-  
+
+.filter-bar .ant-select {
+    width: 150px;
+    margin-right: 10px;
+}
+
+.filter-bar .ant-select-selector {
+    border-radius: 6px; /* Rounded Select dropdowns */
+    background-color: #ffffff; /* White background for clarity */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.filter-bar .ant-select:hover .ant-select-selector {
+    border-color: #40a9ff; /* Blue border on hover */
+}
+
+.filter-bar .ant-select-selection-placeholder {
+    color: #8c8c8c; /* Placeholder color for consistency */
+}
+
+.filter-bar .ant-select-selection-item {
+    font-weight: 500; /* Slightly bold for better readability */
+}
+
+/* Clear button styling */
+.filter-bar .ant-select-clear {
+    color: #ff4d4f; /* Light red color for clear button */
+    font-size: 12px;
+}

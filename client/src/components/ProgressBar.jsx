@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Slider, Progress, message } from 'antd';
 import { UpdateProgress, GetProgress } from '../calls/progressCalls';
+import './../styles/ProgressBar.css';
 
-function ProgressBar({ taskId, initialProgress }) {
-    const [progress, setProgress] = useState(initialProgress || 0);
+function ProgressBar({ taskId }) {
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         const fetchProgress = async () => {
@@ -34,7 +35,7 @@ function ProgressBar({ taskId, initialProgress }) {
     };
 
     return (
-        <div>
+        <div className="progress-bar-container">
             <Progress percent={progress} />
             <Slider
                 min={0}

@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
 
 // Router-level-middleware for user profile
 router.get('/get-current-user', authmiddleware, async (req, res) => {
-    const user = await User.findById(req.body.userId).select('-password');
+    const user = await User.findById(req.body.userId).select('-password -otp -otpExpiry');
 
     res.send({
         success: true,
@@ -97,6 +97,36 @@ router.get('/get-current-user', authmiddleware, async (req, res) => {
         data: user
     })
 })
+
+// Route to update user profile
+router.put('/update-profile', async (req, res) => {
+    try {
+        const {name, email, userType} = req.body;
+        const userId = req.body.userId;
+
+        const user = await User.findByIdAndUpdate(userId, {name, email, userType}, {new: true});
+
+        if (!user) {
+            return res.send({
+                success: false,
+                message: "User not found",
+                data: user
+            });
+        }
+
+        res.send({
+            success: true,
+            message: "User profile updated successfully",
+            data: user
+        });
+    }
+    catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        });
+    }
+});
 
 // Route for forget password
 router.post('/forget-password', async function(req, res) {

@@ -46,4 +46,21 @@ router.put('/get-notifications/:id/read', authMiddleware, async (req, res) => {
     }
 })
 
+// Delete a notification after 7 days
+router.delete('/delete-notifications', async (req, res) => {
+    try {
+        const notifications = await Notification.deleteMany({ createdAt: { $lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
+        res.send({
+            success: true,
+            message: "Notifications deleted successfully",
+            data: notifications
+        });
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 module.exports = router;

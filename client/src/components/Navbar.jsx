@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, Button, Menu, Dropdown, Badge, Layout } from 'antd';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
     HomeOutlined,
     LogoutOutlined,
@@ -10,8 +10,8 @@ import {
     BellOutlined
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { useCookies } from 'react-cookie';
-import { GetNotifications, MarkNotificationAsRead } from '../calls/notificationCalls';
+import Cookies from 'js-cookie';
+import { GetNotifications, MarkNotificationAsRead, DeleteNotifications } from '../calls/notificationCalls';
 import './../styles/Navbar.css';
 
 const { Header } = Layout;
@@ -19,7 +19,7 @@ const { Header } = Layout;
 function Navbar() {
     const { user } = useSelector(state => state.user);
     const navigate = useNavigate();
-    const [setCookie] = useCookies(['token']);
+    const location = useLocation();
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
 
@@ -51,24 +51,36 @@ function Navbar() {
             );
             setUnreadCount((count) => count - 1);
         }
-    }
+    };
+
+    const handleDeleteNotifications = async () => {
+        const response = await DeleteNotifications();
+        if (response.success) {
+            setNotifications([]);
+            setUnreadCount(0);
+        }
+    };
 
     const navItems = [
         {
+            key: "/",
             label: "Home",
             icon: <HomeOutlined />,
             onClick: () => navigate("/")
         },
         {
+            key: "/categories",
             label: "Categories",
             icon: <UnorderedListOutlined />,
             onClick: () => navigate("/categories")
         },
         user ? {
+            key: "profile",
             label: `${user.data.name}`,
             icon: <UserOutlined />,
             children: [
                 {
+                    key: "/profile",
                     label: (
                         <span
                         onClick={() => {
@@ -88,11 +100,12 @@ function Navbar() {
                     icon: <ProfileOutlined />
                 },
                 {
+                    key: "/logout",
                     label: (
                         <Link
                            to="/login"
                            onClick={() => {
-                                setCookie('token', '', { path: '/', expires: new Date(0) });
+                                Cookies.remove('token');
                                 navigate('/login'); // Redirect to login page
                            }}
                         >
@@ -106,27 +119,43 @@ function Navbar() {
     ].filter(item => item !== null); // Filter out null items
 
     const notificationDropdown = (
-        <div style={{ width: 300 }}>
+      <div className="notification-dropdown">
           <List
-            itemLayout="horizontal"
-            dataSource={notifications.slice(0, 5)}
-            renderItem={(notification) => (
-              <List.Item
-                actions={[
-                  <Button type="link" onClick={() => handleMarkAsRead(notification._id)}>
-                    Mark as Read
-                  </Button>,
-                ]}
-              >
-                <List.Item.Meta title={notification.title} description={notification.message} />
-              </List.Item>
-            )}
+              itemLayout="horizontal"
+              dataSource={notifications.slice(0, 5)}
+              renderItem={(notification) => (
+                  <List.Item
+                      actions={[
+                          <Button 
+                              type="link" 
+                              onClick={() => handleMarkAsRead(notification._id)}
+                              style={{ padding: '0' }}
+                          >
+                              Mark as Read
+                          </Button>,
+                      ]}
+                  >
+                      <List.Item.Meta 
+                          title={notification.title} 
+                          description={notification.message} 
+                      />
+                  </List.Item>
+              )}
           />
-          <Button type="link" onClick={() => navigate("/notifications")} style={{ width: "100%", textAlign: "center" }}>
-            View All
-          </Button>
-        </div>
-      );
+          <div 
+              className="notification-dropdown-button" 
+              onClick={() => navigate("/notifications")}
+          >
+              View All
+          </div>
+          <div 
+              className="notification-dropdown-button" 
+              onClick={handleDeleteNotifications}
+          >
+              Delete Older notifications
+          </div>
+      </div>
+  );  
     
 
     return (
@@ -136,7 +165,7 @@ function Navbar() {
             position: "sticky",
             top: 0,
             zIndex: 1,
-            width: "100%", // Ensure header stretches across the page
+            width: "100%",
             display: "flex",
             alignItems: "center",
           }}
@@ -145,15 +174,15 @@ function Navbar() {
             Task Manager
           </h3>
 
-          {/* Flex-grow is applied to make the menu stretch to available space */}
           <Menu
             theme="dark"
             mode="horizontal"
             items={navItems}
-            style={{ flexGrow: 1, justifyContent: 'flex-end', width: 'auto' }} // Menu will stretch and justify content properly
+            selectedKeys={[location.pathname]} // Set selected key based on current path
+            style={{ flexGrow: 1, justifyContent: 'flex-end', width: 'auto' }}
           />
 
-           <Dropdown 
+          <Dropdown 
              overlay={notificationDropdown} 
              trigger={['click']}
             >
@@ -162,7 +191,7 @@ function Navbar() {
                    offset={[-10, 10]}
                 >
                 <BellOutlined 
-                    style={{ fontSize: 15, color: 'white', cursor: 'pointer' }} 
+                    style={{ fontSize: 15, color: 'white', cursor: 'pointer', marginLeft: '15px' }} 
                 />
                 </Badge>
            </Dropdown>
@@ -171,3 +200,4 @@ function Navbar() {
 } 
 
 export default Navbar;
+

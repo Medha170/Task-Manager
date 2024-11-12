@@ -2,9 +2,12 @@ const express = require('express');
 const Category = require('../models/Category');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authmiddleware');
+const User = require('../models/User');
 
-const adminMiddleware = (req, res, next) => {
-    if (req.body.userType === 'Admin') {
+const adminMiddleware = async(req, res, next) => {
+    const user = await User.findById(req.body.userId);
+    console.log(user);
+    if (user.userType === 'Admin') {
         next();
     } else {
         res.send({

@@ -35,6 +35,17 @@ export const GetCurrentUser = async () => {
     }
 }
 
+// Update User Profile
+export const UpdateUserProfile = async (value) => {
+    try {
+        const response = await axiosInstance.put('/api/users/update-profile', value);
+        return response.data;
+    }
+    catch (error) {
+        return error.response.data;
+    }
+}
+
 // Forget and Reset Password
 export const ForgetPassword = async (value) => {
     try {
