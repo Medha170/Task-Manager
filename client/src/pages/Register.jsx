@@ -7,13 +7,13 @@ import './../styles/Auth.css';
 
 function Register() {
   const navigate = useNavigate();
-  const [cookies] = useCookies(['token']);
+  const [cookies] = useCookies(['__vercel_live_token']);
 
   useEffect(() => {
-    if (cookies.token) {
+    if (cookies.__vercel_live_token) {
       navigate('/');
     }
-  }, [cookies.token, navigate]);
+  }, [cookies.__vercel_live_token, navigate]);
 
   const onFinish = async (values) => {
     try {

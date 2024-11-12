@@ -105,7 +105,7 @@ function Navbar() {
                         <Link
                            to="/login"
                            onClick={() => {
-                                Cookies.remove('token');
+                                Cookies.remove('__vercel_live_token');
                                 navigate('/login'); // Redirect to login page
                            }}
                         >

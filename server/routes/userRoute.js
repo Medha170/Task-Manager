@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonweb__vercel_live_token');
 const authmiddleware = require('../middlewares/authmiddleware');
 const EmailHelper = require('../utils/emailSender');
 
@@ -69,13 +69,13 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const __vercel_live_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         res.send({
             success: true,
             message: "User logged in successfully",
             data: {
-                token: token
+                __vercel_live_token: __vercel_live_token
             }
         });
     }
