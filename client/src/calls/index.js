@@ -11,16 +11,16 @@ export const axiosInstance = axios.create({
 
 export const useAxiosInterceptor = () => {
     const navigate = useNavigate();
-    const [, , removeCookie] = useCookies(['__vercel_live_token']); // Use `removeCookie` to remove the __vercel_live_token from cookies
+    const [, , removeCookie] = useCookies(['token']); // Use `removeCookie` to remove the token from cookies
 
     // Interceptor to handle responses and navigate on error
     axiosInstance.interceptors.response.use(
         response => response, // Return the response as-is if there's no error
         error => {
             if (error.response && error.response.status === 401) {
-                // Clear the __vercel_live_token from cookies
-                removeCookie('__vercel_live_token', { path: '/' });
-                Cookies.remove('__vercel_live_token'); // Use js-cookie as a fallback
+                // Clear the token from cookies
+                removeCookie('token', { path: '/' });
+                Cookies.remove('token'); // Use js-cookie as a fallback
 
                 // Optionally, display a message to the user
                 alert("Session expired, please log in again.");
@@ -32,12 +32,12 @@ export const useAxiosInterceptor = () => {
         }
     );
 
-    // Attach __vercel_live_token dynamically before each request
+    // Attach token dynamically before each request
     axiosInstance.interceptors.request.use(
         config => {
-            const __vercel_live_token = Cookies.get('__vercel_live_token');
-            if (__vercel_live_token) {
-                config.headers['Authorization'] = `Bearer ${__vercel_live_token}`; // Attach __vercel_live_token if it exists
+            const token = Cookies.get('token');
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`; // Attach token if it exists
             }
             return config;
         },

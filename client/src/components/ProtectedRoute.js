@@ -12,7 +12,7 @@ function ProtectedRoute({ children }) {
     const { user } = useSelector(state => state.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [cookies] = useCookies(['__vercel_live_token']);
+    const [cookies] = useCookies(['token']);
     const [isLoading, setIsLoading] = useState(true); // New state to manage loading status
 
     useEffect(() => {
@@ -31,7 +31,7 @@ function ProtectedRoute({ children }) {
             }
         };
 
-        if (cookies.__vercel_live_token) {
+        if (cookies.token) {
             if (!user) { // Only fetch if `user` is null
                 getValidUser();
             } else {
@@ -40,7 +40,7 @@ function ProtectedRoute({ children }) {
         } else {
             navigate('/login');
         }
-    }, [cookies.__vercel_live_token, dispatch, navigate, user]);
+    }, [cookies.token, dispatch, navigate, user]);
 
     if (isLoading) {
         return <div>Loading...</div>; // Display a loading indicator while fetching user

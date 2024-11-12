@@ -7,20 +7,20 @@ import './../styles/Auth.css'; // Importing the CSS
 
 function Login() {
     const navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(['__vercel_live_token']);
+    const [cookies, setCookie] = useCookies(['token']);
 
     useEffect(() => {
-        if (cookies.__vercel_live_token) {
+        if (cookies.token) {
             navigate('/');
         }
-    }, [cookies.__vercel_live_token, navigate]);
+    }, [cookies.token, navigate]);
 
     const onFinish = async (values) => {
         try {
             const response = await LoginUser(values);
             if (response.success) {
                 message.success(response.message);
-                setCookie('__vercel_live_token', response.data.__vercel_live_token, { 
+                setCookie('token', response.data.token, { 
                   path: '/' , 
                   expires: new Date(Date.now() + 1000*60*60*24*7),
                   sameSite: 'lax'

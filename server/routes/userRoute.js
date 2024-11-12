@@ -69,13 +69,13 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        const __vercel_live_token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         res.send({
             success: true,
             message: "User logged in successfully",
             data: {
-                __vercel_live_token: __vercel_live_token
+                token: token
             }
         });
     }
