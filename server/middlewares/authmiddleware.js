@@ -1,4 +1,4 @@
-const jwt = require('jsonweb__vercel_live_token');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 module.exports = (req, res, next) => {

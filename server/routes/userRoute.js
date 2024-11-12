@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonweb__vercel_live_token');
+const jwt = require('jsonwebtoken');
 const authmiddleware = require('../middlewares/authmiddleware');
 const EmailHelper = require('../utils/emailSender');
 
