@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 
 // Creating axios instance
 export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://task-manager-5f5n.onrender.com',
     withCredentials: true,
 });
 
