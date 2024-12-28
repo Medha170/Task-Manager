@@ -21,7 +21,7 @@ autoDeletionService.start();
 
 app.use(cors(
     {
-        origin: 'http://localhost:3000',
+        origin: 'https://task-manager-lovat-five.vercel.app/',
         credentials: true
     }
 ));
